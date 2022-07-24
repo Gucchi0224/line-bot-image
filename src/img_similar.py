@@ -5,10 +5,10 @@ https://hazm.at/mox/machine-learning/computer-vision/recipes/similar-image-retri
 """
 
 import pickle
-import cv2
 from natsort import natsorted
 import glob
 import numpy as np
+import cv2
 
 # 特徴量空間をcluster_numクラスタに分け重心を求める
 def calc_cluster(files, cluster_num=5):
