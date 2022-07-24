@@ -1,6 +1,5 @@
 import os
 import pickle, io
-import cv2
 import json
 import settings
 from flask import Flask, request, abort
@@ -11,6 +10,7 @@ from linebot.models import ImageMessage
 from PIL import Image
 import numpy as np
 from img_similar import calc_cluster, calc_prob, calc_sim
+import cv2
 
 app = Flask(__name__)
 
