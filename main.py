@@ -9,7 +9,7 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from linebot.models import ImageMessage
 from PIL import Image
 import numpy as np
-from img_similar import calc_cluster, calc_prob, calc_sim
+from src.img_similar import calc_cluster, calc_prob, calc_sim
 import cv2
 
 app = Flask(__name__)
