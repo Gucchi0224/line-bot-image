@@ -1,0 +1,57 @@
+{
+  "type": "bubble",
+  "hero": {
+    "type": "image",
+    "url": "",
+    "size": "full",
+    "aspectRatio": "15:12",
+    "aspectMode": "cover",
+    "backgroundColor": "#5B5A5AFF"
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "spacing": "sm",
+    "contents": [
+      {
+        "type": "text",
+        "text": "翻訳完了",
+        "weight": "bold",
+        "size": "xl",
+        "wrap": true,
+        "contents": []
+      },
+      {
+        "type": "text",
+        "text": "hello, world",
+        "size": "xs",
+        "color": "#797979FF",
+        "margin": "lg",
+        "contents": []
+      },
+      {
+        "type": "text",
+        "text": "を保存しました",
+        "size": "xs",
+        "color": "#797979FF",
+        "contents": []
+      }
+    ]
+  },
+  "footer": {
+    "type": "box",
+    "layout": "vertical",
+    "spacing": "sm",
+    "contents": [
+      {
+        "type": "button",
+        "action": {
+          "type": "uri",
+          "label": "Google Drive",
+          "uri": "https://linecorp.com"
+        },
+        "style": "primary"
+      }
+    ]
+  }
+}
