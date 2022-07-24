@@ -11,6 +11,7 @@ from PIL import Image
 import numpy as np
 from src.img_similar import calc_cluster, calc_prob, calc_sim
 import cv2
+import boto3
 
 app = Flask(__name__)
 
@@ -55,6 +56,16 @@ def handle_message(event):
     for data in content.iter_content():
         image_binary += data
     img_binarystream = io.BytesIO(image_binary)
+    #img_bin = img_binarystream.getvalue()
+    
+    AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
+    
+    # バケット名,オブジェクト名
+    BUCKET_NAME = 'search-image-data'
+    OBJECT_KEY_NAME = 'hello.json'
+    
+    s3 = boto3.resource('s3')
     
     with open("../data/men/men.pickle", "rb") as f:
         obj = pickle.load(f)
