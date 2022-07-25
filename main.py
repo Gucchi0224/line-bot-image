@@ -74,11 +74,9 @@ def handle_message(event):
     response = client.get_object(Bucket=BUCKET_NAME, Key="men/men.pickle")
     body_bin_obj = io.BytesIO(response['Body'].read())
     body_bin = body_bin_obj.getvalue()
-    
-    with open(body_bin, "rb") as f:
-        obj = pickle.load(f)
-        centroids = obj["centroids"]
-        files = obj["files"]
+    obj = pickle.load(body_bin)
+    centroids = obj["centroids"]
+    files = obj["files"]
     
     # 類似画像検索
     prob = calc_prob([img_binarystream], centroids)[0]
