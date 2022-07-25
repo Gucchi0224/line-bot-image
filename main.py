@@ -113,7 +113,7 @@ def handle_message(event):
     # FlexMessageのjsonファイルを読み込む
     with open("json/FlexMessage/FlexMessage.json", "r") as f:
         flex_json_data = json.load(f)
-    
+    print(string)
     reply_message(event, TextSendMessage(text=string))
 
 
