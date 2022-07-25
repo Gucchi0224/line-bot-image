@@ -36,10 +36,10 @@ def calc_prob(files, centroids):
     for file in files:
         descriptor = None
         # URLの場合
-        if type(file) != bytes:
+        try:
             img_pil = Image.open(urllib.request.urlopen(file))
         # バイナリオブジェクトの場合
-        else:
+        except:
             img_pil = Image.open(file)
         # numpy配列に変換
         img_numpy = np.asarray(img_pil)
