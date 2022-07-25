@@ -62,11 +62,12 @@ def handle_message(event):
     AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
     
     # バケット名,オブジェクト名
-    BUCKET_NAME = 'search-image-data'
-    OBJECT_KEY_NAME = 'hello.json'
+    BUCKET_NAME = settings.BUCKET_NAME
     
     s3 = boto3.resource('s3')
-    
+    # Print out bucket names
+    for bucket in s3.buckets.all():
+        print(bucket.name)
     with open("../data/men/men.pickle", "rb") as f:
         obj = pickle.load(f)
         centroids = obj["centroids"]
