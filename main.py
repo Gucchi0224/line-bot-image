@@ -50,7 +50,7 @@ def handle_message(event):
     message_id = event.message.id
     userid = event.source.user_id
     
-    # バイナリデータの取得
+    # 画像のバイナリデータの取得
     content = line_bot_api.get_message_content(message_id)
     image_binary = b""
     for data in content.iter_content():
@@ -58,18 +58,23 @@ def handle_message(event):
     img_binarystream = io.BytesIO(image_binary)
     #img_bin = img_binarystream.getvalue()
     
+    # AWS S3にアクセスするためのキーの指定
     AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
     BUCKET_NAME = settings.BUCKET_NAME
     
+    # 
     client = boto3.client(
         's3', region_name='ap-northeast-1', 
         aws_access_key_id=AWS_ACCESS_KEY_ID,
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY
     )
     
+    # S3内のpickleを取得
     response = client.get_object(Bucket=BUCKET_NAME, Key="men/men.pickle")
-    body_bin = response['Body'].read()
+    body_bin_obj = io.BytesIO(response['Body'].read())
+    body_bin = body_bin_obj.getvalue()
+    
     with open(body_bin, "rb") as f:
         obj = pickle.load(f)
         centroids = obj["centroids"]
