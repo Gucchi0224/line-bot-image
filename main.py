@@ -84,6 +84,7 @@ def handle_message(event):
     
     # 類似画像検索
     prob = calc_prob([img_binarystream], centroids)[0]
+    print("input prob: {}".format(prob))
     
     url = client.generate_presigned_url(
         ClientMethod='get_object',
@@ -93,14 +94,8 @@ def handle_message(event):
     
     df = pd.read_csv(url)
     df_image = df["画像URL"].to_list()
-    img_bin_list = []
-    for image_url in df_image:
-        img = Image.open(urllib.request.urlopen(image_url))
-        img_bin = img.tobytes()
-        img_bin_list.append(io.BytesIO((img_bin)))
-    
     # データセットの画像の各クラスタの
-    probs = calc_prob(img_bin_list, centroids)
+    probs = calc_prob(df_image, centroids)
     rank = []
     for f, p in zip(df_image, probs):
         if p is not None:
