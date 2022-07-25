@@ -93,8 +93,10 @@ def handle_message(event):
     )
     
     df = pd.read_csv(url)
-    print(df.head())
-    probs = calc_prob(files, centroids)
+    df_image = df["画像URL"].to_list()
+    print(df_image[0])
+    return 0
+    probs = calc_prob(df_image, centroids)
     rank = []
     for f, p in zip(files, probs):
         if p is not None:
