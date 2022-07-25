@@ -77,15 +77,13 @@ def handle_message(event):
         Params={'Bucket':  BUCKET_NAME, 'Key': "men/men.pickle"},
         ExpiresIn=60
     )
-    print(url)
     # S3内のpickleを取得
-    response = client.get_object(Bucket=BUCKET_NAME, Key="men/men.pickle")
-    body_str_obj = io.BytesIO(response['Body'].read())
     with urllib.request.urlopen(url) as f:
         obj = pickle.load(f)
         centroids = obj["centroids"]
         files = obj["files"]
     
+    print(files)
     # 類似画像検索
     prob = calc_prob([img_binarystream], centroids)[0]
     probs = calc_prob(files, centroids)
