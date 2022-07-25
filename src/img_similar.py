@@ -26,7 +26,7 @@ def calc_cluster(files, cluster_num=5):
     return centroids
 
 # 画像がどのクラスタに属するかの確率を計算
-def calc_prob(files, centroids, detector):
+def calc_prob(files, centroids):
     matcher = cv2.BFMatcher()
     extractor = cv2.BOWImgDescriptorExtractor(detector, matcher)
     extractor.setVocabulary(centroids)
