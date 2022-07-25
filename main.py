@@ -79,10 +79,13 @@ def handle_message(event):
     print(url)
     # S3内のpickleを取得
     response = client.get_object(Bucket=BUCKET_NAME, Key="men/men.pickle")
-    body_str_obj = io.StringIO(response['Body'].read())
-    obj = pickle.load(body_str_obj)
-    centroids = obj["centroids"]
-    files = obj["files"]
+    body_str_obj = io.BytesIO(response['Body'].read())
+    buffer = body_str_obj.getbuffer()
+    with open(buffer, "rb") as f:
+            
+        obj = pickle.load(body_str_obj)
+        centroids = obj["centroids"]
+        files = obj["files"]
     
     # 類似画像検索
     prob = calc_prob([img_binarystream], centroids)[0]
