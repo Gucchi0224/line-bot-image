@@ -10,9 +10,10 @@ import glob
 import numpy as np
 import cv2
 
+detector = cv2.KAZE_create()
+
 # 特徴量空間をcluster_numクラスタに分け重心を求める
-def calc_cluster(files, cluster_num=5):
-    detector = cv2.KAZE_create()
+def calc_cluster(files, cluster_num=5):    
     bowTrainer = cv2.BOWKMeansTrainer(cluster_num)
     for file in files:
         image = cv2.imread(file)
@@ -22,7 +23,7 @@ def calc_cluster(files, cluster_num=5):
             if descriptors is not None:
                 bowTrainer.add(descriptors.astype(np.float32))
     centroids = bowTrainer.cluster()
-    return centroids, detector
+    return centroids
 
 # 画像がどのクラスタに属するかの確率を計算
 def calc_prob(files, centroids, detector):
@@ -50,9 +51,9 @@ def main():
     for gender in lists:
         files = natsorted(glob.glob(f"../data/{gender}/image/mask/*.jpg"))
         # 画像の特徴ベクトルをクラスタリング
-        centroids, detector = calc_cluster(files)
+        centroids, _ = calc_cluster(files)
         with open(f"../data/{gender}/{gender}.pickle", "wb") as f:
-            pickle.dump({"centroids": centroids, "detector": detector, "files": files}, f)
+            pickle.dump({"centroids": centroids, "files": files}, f)
 
 if __name__ == "__main__":
     main()
