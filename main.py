@@ -62,8 +62,6 @@ def handle_message(event):
     AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
     BUCKET_NAME = settings.BUCKET_NAME
     
-    s3 = boto3.resource('s3')
-    
     client = boto3.client(
         's3', region_name='ap-northeast-1', 
         aws_access_key_id=AWS_ACCESS_KEY_ID,
@@ -71,10 +69,11 @@ def handle_message(event):
     )
     
     response = client.get_object(Bucket=BUCKET_NAME, Key="men/men.pickle")
-    rb = response['Body'].read()
-    obj = pickle.load(rb)
-    centroids = obj["centroids"]
-    files = obj["files"]
+    body_bin_obj = io.BytesIO(response['Body'].read())
+    with open(body_bin_obj, "rb") as f
+        obj = pickle.load(f)
+        centroids = obj["centroids"]
+        files = obj["files"]
     
     # 類似画像検索
     prob = calc_prob([img_binarystream], centroids)[0]
