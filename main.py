@@ -59,7 +59,6 @@ def handle_message(event):
     for data in content.iter_content():
         image_binary += data
     img_binarystream = io.BytesIO(image_binary)
-    #img_bin = img_binarystream.getvalue()
     
     # AWS S3にアクセスするためのキーの指定
     AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
@@ -97,9 +96,10 @@ def handle_message(event):
     img_bin_list = []
     for image_url in df_image:
         img = Image.open(urllib.request.urlopen(image_url))
-        image = img.tobytes()
-        img_bin_list.append(image)
+        img_bin = img.tobytes()
+        img_bin_list.append(io.BytesIO((img_bin))
     
+    # データセットの画像の各クラスタの
     probs = calc_prob(img_bin_list, centroids)
     rank = []
     for f, p in zip(df_image, probs):
