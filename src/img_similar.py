@@ -36,7 +36,7 @@ def calc_prob(files, centroids):
     for file in files:
         descriptor = None
         # URLの場合
-        if type(file) is not bytes:
+        if type(file) == bytes:
             img_pil = Image.open(urllib.request.urlopen(file))
         # バイナリオブジェクトの場合
         else:
