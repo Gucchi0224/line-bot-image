@@ -71,17 +71,10 @@ def handle_message(event):
     )
     
     response = client.get_object(Bucket=BUCKET_NAME, Key="men/men.pickle")
-    body = response['Body'].read()
-    print(body)
-    
-    response = client.list_buckets()
-    for bucket in response['Buckets']:
-        print(f'  {bucket["Name"]}')
-    
-    with open("../data/men/men.pickle", "rb") as f:
-        obj = pickle.load(f)
-        centroids = obj["centroids"]
-        files = obj["files"]
+    rb = response['Body'].read()
+    obj = pickle.load(rb)
+    centroids = obj["centroids"]
+    files = obj["files"]
     
     # 類似画像検索
     prob = calc_prob([img_binarystream], centroids)[0]
