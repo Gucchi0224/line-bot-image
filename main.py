@@ -97,7 +97,7 @@ def handle_message(event):
     for image_url in df_image:
         img = Image.open(urllib.request.urlopen(image_url))
         img_bin = img.tobytes()
-        img_bin_list.append(io.BytesIO((img_bin))
+        img_bin_list.append(io.BytesIO((img_bin)))
     
     # データセットの画像の各クラスタの
     probs = calc_prob(img_bin_list, centroids)
