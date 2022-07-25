@@ -9,6 +9,7 @@ from natsort import natsorted
 import glob
 import numpy as np
 import cv2
+from PIL import Image
 
 detector = cv2.KAZE_create()
 
@@ -26,14 +27,16 @@ def calc_cluster(files, cluster_num=5):
     return centroids
 
 # 画像がどのクラスタに属するかの確率を計算
-def calc_prob(files, centroids):
+def calc_prob(bin_files, centroids):
     matcher = cv2.BFMatcher()
     extractor = cv2.BOWImgDescriptorExtractor(detector, matcher)
     extractor.setVocabulary(centroids)
     probs = []
-    for file in files:
+    for bin_file in bin_files:
         descriptor = None
-        image = cv2.imread(file, cv2.IMREAD_GRAYSCALE)
+        img_pil = Image.open(bin_file)
+        img_numpy = np.asarray(img_pil)
+        image = cv2.cvtColor(img_numpy, cv2.COLOR_RGB2GRAY)
         if image is not None:
             keypoints = detector.detect(image, None)
             if keypoints is not None:
