@@ -83,7 +83,6 @@ def handle_message(event):
         centroids = obj["centroids"]
         files = obj["files"]
     
-    print(files)
     # 類似画像検索
     prob = calc_prob([img_binarystream], centroids)[0]
     probs = calc_prob(files, centroids)
