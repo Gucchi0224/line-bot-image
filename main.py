@@ -70,7 +70,7 @@ def handle_message(event):
     
     response = client.get_object(Bucket=BUCKET_NAME, Key="men/men.pickle")
     body_bin_obj = io.BytesIO(response['Body'].read())
-    with open(body_bin_obj, "rb") as f
+    with open(body_bin_obj, "rb") as f:
         obj = pickle.load(f)
         centroids = obj["centroids"]
         files = obj["files"]
