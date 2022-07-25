@@ -104,16 +104,13 @@ def handle_message(event):
     # ランキングを降順に並び替え
     rank = sorted(rank, key=lambda x: -x[1])
     string = ""
-    for f, sim in rank:
+    for f, sim in rank[:5]:
         string += "%.3f %s \n" % (sim, f)
-    #img_pil = Image.open(img_binarystream)
-    #img_numpy = np.asarray(img_pil)
-    #img_numpy_bgr = cv2.cvtColor(img_numpy, cv2.COLOR_RGBA2BGR)
     
     # FlexMessageのjsonファイルを読み込む
     with open("json/FlexMessage/FlexMessage.json", "r") as f:
         flex_json_data = json.load(f)
-    print(string)
+    
     reply_message(event, TextSendMessage(text=string))
 
 
