@@ -93,6 +93,7 @@ def handle_message(event):
     )
     
     df = pd.read_csv(url)
+    df = df[:50]
     df_image = df["画像URL"].to_list()
     # データセットの画像の各クラスタの
     probs = calc_prob(df_image, centroids)
