@@ -72,7 +72,8 @@ def handle_message(event):
     
     # S3内のpickleを取得
     response = client.get_object(Bucket=BUCKET_NAME, Key="men/men.pickle")
-    body_bin_obj = io.BytesIO(response['Body'].read())
+    body_bin_obj = response['Body'].read()
+    print("type: {}".format(type(body_bin_obj)))
     body_bin = body_bin_obj.getvalue()
     obj = pickle.load(body_bin)
     centroids = obj["centroids"]
