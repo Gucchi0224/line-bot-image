@@ -14,6 +14,7 @@ from src.img_similar import calc_cluster, calc_prob, calc_sim
 import cv2
 import boto3
 import urllib.request
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -81,10 +82,18 @@ def handle_message(event):
     with urllib.request.urlopen(url) as f:
         obj = pickle.load(f)
         centroids = obj["centroids"]
-        files = obj["files"]
     
     # 類似画像検索
     prob = calc_prob([img_binarystream], centroids)[0]
+    
+    url = client.generate_presigned_url(
+        ClientMethod='get_object',
+        Params={'Bucket':  BUCKET_NAME, 'Key': "men/men.csv"},
+        ExpiresIn=60
+    )
+    
+    df = pd.read_csv(url)
+    print(df.head())
     probs = calc_prob(files, centroids)
     rank = []
     for f, p in zip(files, probs):
