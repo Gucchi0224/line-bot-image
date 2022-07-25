@@ -13,6 +13,7 @@ import numpy as np
 from src.img_similar import calc_cluster, calc_prob, calc_sim
 import cv2
 import boto3
+import urllib.request
 
 app = Flask(__name__)
 
@@ -80,10 +81,8 @@ def handle_message(event):
     # S3内のpickleを取得
     response = client.get_object(Bucket=BUCKET_NAME, Key="men/men.pickle")
     body_str_obj = io.BytesIO(response['Body'].read())
-    buffer = body_str_obj.getbuffer()
-    with open(buffer, "rb") as f:
-            
-        obj = pickle.load(body_str_obj)
+    with urllib.request.urlopen(url) as f:
+        obj = pickle.load(f)
         centroids = obj["centroids"]
         files = obj["files"]
     
