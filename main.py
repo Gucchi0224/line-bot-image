@@ -64,10 +64,17 @@ def handle_message(event):
     # バケット名,オブジェクト名
     BUCKET_NAME = settings.BUCKET_NAME
     
-    s3 = boto3.resource('s3')
-    # Print out bucket names
-    for bucket in s3.buckets.all():
-        print(bucket.name)
+    client = boto3.client(
+        's3', region_name='ap-northeast-1', 
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+    )
+    
+    response = client.list_buckets()
+    print('Existing buckets:')
+    for bucket in response['Buckets']:
+        print(f'  {bucket["Name"]}')
+    
     with open("../data/men/men.pickle", "rb") as f:
         obj = pickle.load(f)
         centroids = obj["centroids"]
