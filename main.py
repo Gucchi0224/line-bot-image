@@ -60,9 +60,9 @@ def handle_message(event):
     
     AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
-    
-    # バケット名,オブジェクト名
     BUCKET_NAME = settings.BUCKET_NAME
+    
+    s3 = boto3.resource('s3')
     
     client = boto3.client(
         's3', region_name='ap-northeast-1', 
@@ -70,8 +70,10 @@ def handle_message(event):
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY
     )
     
+    response = client.get_object(Bucket=BUCKET_NAME, Key="men/men.pickle")
+    body = response['Body'].read()
+    
     response = client.list_buckets()
-    print('Existing buckets:')
     for bucket in response['Buckets']:
         print(f'  {bucket["Name"]}')
     
