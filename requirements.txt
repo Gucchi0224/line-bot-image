@@ -22,3 +22,4 @@ pandas
 IPython
 tqdm
 natsort
+boto3
