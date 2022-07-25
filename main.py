@@ -1,6 +1,7 @@
 import os
 import pickle, io
 import json
+from pydoc import cli
 import settings
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
@@ -70,6 +71,12 @@ def handle_message(event):
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY
     )
     
+    url = client.generate_presigned_url(
+        ClientMethod='get_object',
+        Params={'Bucket':  BUCKET_NAME, 'Key': "men/men.pickle"},
+        ExpiresIn=60
+    )
+    print(url)
     # S3内のpickleを取得
     response = client.get_object(Bucket=BUCKET_NAME, Key="men/men.pickle")
     body_str_obj = io.StringIO(response['Body'].read())
