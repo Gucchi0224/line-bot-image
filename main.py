@@ -72,6 +72,7 @@ def handle_message(event):
     
     response = client.get_object(Bucket=BUCKET_NAME, Key="men/men.pickle")
     body = response['Body'].read()
+    print(body)
     
     response = client.list_buckets()
     for bucket in response['Buckets']:
