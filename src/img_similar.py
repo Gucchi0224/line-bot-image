@@ -50,9 +50,9 @@ def main():
     for gender in lists:
         files = natsorted(glob.glob(f"../data/{gender}/image/mask/*.jpg"))
         # 画像の特徴ベクトルをクラスタリング
-        centroids, _ = calc_cluster(files)
+        centroids, detector = calc_cluster(files)
         with open(f"../data/{gender}/{gender}.pickle", "wb") as f:
-            pickle.dump({"centroids": centroids, "files": files}, f)
+            pickle.dump({"centroids": centroids, "detector": detector, "files": files}, f)
 
 if __name__ == "__main__":
     main()
