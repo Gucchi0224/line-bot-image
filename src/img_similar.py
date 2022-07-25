@@ -14,7 +14,7 @@ import urllib.request
 
 detector = cv2.KAZE_create()
 
-# 特徴量空間をcluster_numクラスタに分け重心を求める
+# 特徴量空間をcluster_numクラスタに分け重心を求める（予め用意しておく）
 def calc_cluster(files, cluster_num=5):    
     bowTrainer = cv2.BOWKMeansTrainer(cluster_num)
     for file in files:
@@ -27,7 +27,7 @@ def calc_cluster(files, cluster_num=5):
     centroids = bowTrainer.cluster()
     return centroids
 
-# 画像がどのクラスタに属するかの確率を計算
+# 画像がどのクラスタに属するかの確率を計算（LINE Botで使用）
 def calc_prob(files, centroids):
     matcher = cv2.BFMatcher()
     extractor = cv2.BOWImgDescriptorExtractor(detector, matcher)
