@@ -94,11 +94,15 @@ def handle_message(event):
     
     df = pd.read_csv(url)
     df_image = df["画像URL"].to_list()
-    print(df_image[0])
-    return 0
-    probs = calc_prob(df_image, centroids)
+    img_bin_list = []
+    for image_url in df_image:
+        img = Image.open(urllib.request.urlopen(image_url))
+        image = img.tobytes()
+        img_bin_list.append(image)
+    
+    probs = calc_prob(img_bin_list, centroids)
     rank = []
-    for f, p in zip(files, probs):
+    for f, p in zip(df_image, probs):
         if p is not None:
             sim = calc_sim(prob, p)
             rank.append([f, sim])
