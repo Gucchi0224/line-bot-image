@@ -10,6 +10,7 @@ import glob
 import numpy as np
 import cv2
 from PIL import Image
+import urllib.request
 
 detector = cv2.KAZE_create()
 
@@ -27,15 +28,22 @@ def calc_cluster(files, cluster_num=5):
     return centroids
 
 # 画像がどのクラスタに属するかの確率を計算
-def calc_prob(bin_files, centroids):
+def calc_prob(files, centroids):
     matcher = cv2.BFMatcher()
     extractor = cv2.BOWImgDescriptorExtractor(detector, matcher)
     extractor.setVocabulary(centroids)
     probs = []
-    for bin_file in bin_files:
+    for file in files:
         descriptor = None
-        img_pil = Image.open(bin_file)
+        # URLの場合
+        if type(file) is not bytes:
+            img_pil = Image.open(urllib.request.urlopen(file))
+        # バイナリオブジェクトの場合
+        else:
+            img_pil = Image.open(file)
+        # numpy配列に変換
         img_numpy = np.asarray(img_pil)
+        # グレースケールに変換
         image = cv2.cvtColor(img_numpy, cv2.COLOR_RGB2GRAY)
         if image is not None:
             keypoints = detector.detect(image, None)
