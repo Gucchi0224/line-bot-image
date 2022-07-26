@@ -10,7 +10,6 @@ import glob
 import numpy as np
 import cv2
 from PIL import Image
-import urllib.request
 import pandas as pd
 
 detector = cv2.KAZE_create()
@@ -28,7 +27,7 @@ def calc_cluster(files, cluster_num=5):
     centroids = bowTrainer.cluster()
     return centroids
 
-# 画像がどのクラスタに属するかの確率を計算（LINE Botで使用）
+# 画像がどのクラスタに属するかの確率を計算
 def calc_prob(files, centroids):
     matcher = cv2.BFMatcher()
     extractor = cv2.BOWImgDescriptorExtractor(detector, matcher)
@@ -37,9 +36,7 @@ def calc_prob(files, centroids):
     for file in files:
         descriptor = None
         img_pil = Image.open(file)
-        # numpy配列に変換
         img_numpy = np.asarray(img_pil)
-        # グレースケールに変換
         image = cv2.cvtColor(img_numpy, cv2.COLOR_RGB2GRAY)
         if image is not None:
             keypoints = detector.detect(image, None)
@@ -56,17 +53,20 @@ def main():
     # index生成
     lists = ["men", "women"]
     for gender in lists:
+        # csvファイルとマスクされた画像ファイルの取得
         df = pd.read_csv(f"../data/{gender}/{gender}.csv", index_col=0)
         files = natsorted(glob.glob(f"../data/{gender}/image/mask/*.jpg"))
         # 画像の特徴ベクトルをクラスタリング
         centroids = calc_cluster(files)
+        # どのクラスタに属するかの確率を計算して、DataFrameを作成
         probs = calc_prob(files, centroids)
         df_probs = pd.DataFrame(probs, columns=["probs"])
+        # 元のDataframeとクラスタの所属確率が含まれるDataframeを結合して、CSVファイルを作成
         new_df = pd.concat([df, df_probs], axis=1)
         new_df.to_csv(f"../data/{gender}/{gender}_add_probs.csv")
+        # LINE Botで使用するためにモデルを保存
         with open(f"../data/{gender}/{gender}.pickle", "wb") as f:
             pickle.dump({"centroids": centroids}, f)
-        
 
 if __name__ == "__main__":
     main()
