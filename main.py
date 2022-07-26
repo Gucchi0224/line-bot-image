@@ -11,7 +11,6 @@ from src.img_similar import calc_prob, calc_sim
 import boto3
 import urllib.request
 import pandas as pd
-from boto3.dynamodb.conditions import Key, Attr
 
 app = Flask(__name__)
 
@@ -45,11 +44,14 @@ def callback():
 def handle_message(event):
     userid = event.source.user_id
     text = event.message.text
+    
+    # dbのClientを取得
     db_client = boto3.client('dynamodb', 
         region_name='ap-northeast-1', 
         aws_access_key_id=AWS_ACCESS_KEY_ID,
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY
     )
+    # dbに性別の情報を保存
     if text == "男":
         send_text = "男性の洋服を推薦します。"
         db_client.put_item(
@@ -70,6 +72,7 @@ def handle_message(event):
         )
     else:
         return 0
+    
     reply_message(event, TextSendMessage(text=send_text))
 
 
@@ -80,21 +83,23 @@ def handle_message(event):
     message_id = event.message.id
     userid = event.source.user_id
     
+    # dbのClientを取得
     db_client = boto3.client('dynamodb', 
         region_name='ap-northeast-1', 
         aws_access_key_id=AWS_ACCESS_KEY_ID,
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY
     )
     
+    # 性別の取得
     res = db_client.get_item(
         TableName="select_gender",
         Key={
             'user_id': {'S': userid},
         }
     )
-    
     gender = res['Item']['gender']['S']
     
+    # S3のClientを取得
     client = boto3.client(
         's3', region_name='ap-northeast-1', 
         aws_access_key_id=AWS_ACCESS_KEY_ID,
