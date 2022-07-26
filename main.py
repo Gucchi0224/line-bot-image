@@ -34,24 +34,18 @@ def callback():
 
     return 'OK'
 
-# テキストデータ→オウム返し
+# テキストデータ
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     userid = event.source.user_id
     text = event.message.text
     if text == "男":
         text = "男性の洋服を推薦します。"
-        messsage = TextSendMessage(text=text)
     elif text == "女":
         text = "女性の洋服を推薦します。"
-        messsage = TextSendMessage(text=text)
     else:
-        # FlexMessageのjsonファイルを読み込む
-        with open("json/FlexMessage/FlexMessage.json", "r") as f:
-            flex_json_data = json.load(f)
-        message = FlexSendMessage(alt_text="Image Similar", contents=flex_json_data)
-        
-    reply_message(event, message)
+        return 0
+    reply_message(event, message = TextSendMessage(text=text))
 
 
 # 画像データ→類似検索
@@ -108,15 +102,22 @@ def handle_message(event):
     
     # ランキングを降順に並び替え
     rank = sorted(rank, key=lambda x: -x[1])
-    string = ""
-    for f, sim in rank[:5]:
-        string += "%.3f %s \n" % (sim, f)
     
+    # 上位5個の洋服を推薦
+    d_flex = {
+        "type": "carousel",
+        "contents": []
+    }
     # FlexMessageのjsonファイルを読み込む
     with open("json/FlexMessage/FlexMessage.json", "r") as f:
         flex_json_data = json.load(f)
     
-    reply_message(event, TextSendMessage(text=string))
+    for f, sim in rank[:5]:
+        d_flex["contents"].append(flex_json_data)
+        #string += "%.3f %s \n" % (sim, f)
+    
+    message = FlexSendMessage(alt_text="Image Similar", contents=d_flex)
+    reply_message(event, TextSendMessage(text=message))
 
 
 # メッセージを送信
