@@ -1,68 +1,63 @@
 {
-  "type": "carousel",
-  "contents": [
-    {
-      "type": "bubble",
-      "hero": {
-        "type": "image",
-        "size": "full",
-        "aspectRatio": "15:12",
-        "aspectMode": "cover",
-        "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png"
+  "type": "bubble",
+  "hero": {
+    "type": "image",
+    "size": "full",
+    "aspectRatio": "15:10",
+    "aspectMode": "cover",
+    "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png"
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "spacing": "sm",
+    "contents": [
+      {
+        "type": "text",
+        "text": "Arm Chair, White",
+        "wrap": true,
+        "weight": "bold",
+        "size": "xl"
       },
-      "body": {
+      {
         "type": "box",
-        "layout": "vertical",
-        "spacing": "sm",
+        "layout": "baseline",
         "contents": [
           {
             "type": "text",
-            "text": "Arm Chair, White",
+            "text": "$49",
             "wrap": true,
             "weight": "bold",
-            "size": "xl"
+            "size": "xl",
+            "flex": 0
           },
           {
-            "type": "box",
-            "layout": "baseline",
-            "contents": [
-              {
-                "type": "text",
-                "text": "$49",
-                "wrap": true,
-                "weight": "bold",
-                "size": "xl",
-                "flex": 0
-              },
-              {
-                "type": "text",
-                "text": ".99",
-                "wrap": true,
-                "weight": "bold",
-                "size": "sm",
-                "flex": 0
-              }
-            ]
-          }
-        ],
-        "margin": "none"
-      },
-      "footer": {
-        "type": "box",
-        "layout": "vertical",
-        "spacing": "sm",
-        "contents": [
-          {
-            "type": "button",
-            "style": "primary",
-            "action": {
-              "type": "uri",
-              "label": "URL",
-              "uri": "https://linecorp.com"
-            }
+            "type": "text",
+            "text": ".99",
+            "wrap": true,
+            "weight": "bold",
+            "size": "sm",
+            "flex": 0
           }
         ]
       }
-    }
-  ]
+    ],
+    "margin": "none"
+  },
+  "footer": {
+    "type": "box",
+    "layout": "vertical",
+    "spacing": "sm",
+    "contents": [
+      {
+        "type": "button",
+        "style": "primary",
+        "action": {
+          "type": "uri",
+          "label": "URL",
+          "uri": "https://linecorp.com"
+        }
+      }
+    ]
+  }
 }
