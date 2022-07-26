@@ -5,11 +5,10 @@
       "type": "bubble",
       "hero": {
         "type": "image",
-        "url": "",
         "size": "full",
         "aspectRatio": "15:12",
         "aspectMode": "cover",
-        "backgroundColor": "#5B5A5AFF"
+        "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png"
       },
       "body": {
         "type": "box",
@@ -18,28 +17,35 @@
         "contents": [
           {
             "type": "text",
-            "text": "翻訳完了",
-            "weight": "bold",
-            "size": "xl",
+            "text": "Arm Chair, White",
             "wrap": true,
-            "contents": []
+            "weight": "bold",
+            "size": "xl"
           },
           {
-            "type": "text",
-            "text": "hello, world",
-            "size": "xs",
-            "color": "#797979FF",
-            "margin": "lg",
-            "contents": []
-          },
-          {
-            "type": "text",
-            "text": "を保存しました",
-            "size": "xs",
-            "color": "#797979FF",
-            "contents": []
+            "type": "box",
+            "layout": "baseline",
+            "contents": [
+              {
+                "type": "text",
+                "text": "$49",
+                "wrap": true,
+                "weight": "bold",
+                "size": "xl",
+                "flex": 0
+              },
+              {
+                "type": "text",
+                "text": ".99",
+                "wrap": true,
+                "weight": "bold",
+                "size": "sm",
+                "flex": 0
+              }
+            ]
           }
-        ]
+        ],
+        "margin": "none"
       },
       "footer": {
         "type": "box",
@@ -48,69 +54,12 @@
         "contents": [
           {
             "type": "button",
+            "style": "primary",
             "action": {
               "type": "uri",
-              "label": "Google Drive",
+              "label": "URL",
               "uri": "https://linecorp.com"
-            },
-            "style": "primary"
-          }
-        ]
-      }
-    },
-    {
-      "type": "bubble",
-      "hero": {
-        "type": "image",
-        "url": "",
-        "size": "full",
-        "aspectRatio": "15:12",
-        "aspectMode": "cover",
-        "backgroundColor": "#5B5A5AFF"
-      },
-      "body": {
-        "type": "box",
-        "layout": "vertical",
-        "spacing": "sm",
-        "contents": [
-          {
-            "type": "text",
-            "text": "翻訳完了",
-            "weight": "bold",
-            "size": "xl",
-            "wrap": true,
-            "contents": []
-          },
-          {
-            "type": "text",
-            "text": "hello, world",
-            "size": "xs",
-            "color": "#797979FF",
-            "margin": "lg",
-            "contents": []
-          },
-          {
-            "type": "text",
-            "text": "を保存しました",
-            "size": "xs",
-            "color": "#797979FF",
-            "contents": []
-          }
-        ]
-      },
-      "footer": {
-        "type": "box",
-        "layout": "vertical",
-        "spacing": "sm",
-        "contents": [
-          {
-            "type": "button",
-            "action": {
-              "type": "uri",
-              "label": "Google Drive",
-              "uri": "https://linecorp.com"
-            },
-            "style": "primary"
+            }
           }
         ]
       }
