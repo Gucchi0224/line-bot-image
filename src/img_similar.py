@@ -11,6 +11,7 @@ import numpy as np
 import cv2
 from PIL import Image
 import urllib.request
+import pandas as pd
 
 detector = cv2.KAZE_create()
 
@@ -35,12 +36,7 @@ def calc_prob(files, centroids):
     probs = []
     for file in files:
         descriptor = None
-        # URLの場合
-        try:
-            img_pil = Image.open(urllib.request.urlopen(file))
-        # バイナリオブジェクトの場合
-        except:
-            img_pil = Image.open(file)
+        img_pil = Image.open(file)
         # numpy配列に変換
         img_numpy = np.asarray(img_pil)
         # グレースケールに変換
@@ -49,7 +45,7 @@ def calc_prob(files, centroids):
             keypoints = detector.detect(image, None)
             if keypoints is not None:
                 descriptor = extractor.compute(image, keypoints)[0]
-        probs.append(descriptor)
+        probs.append(str(descriptor))
     return probs
 
 # 指定されたクラスタ所属確率の類似度を算出する
@@ -60,11 +56,17 @@ def main():
     # index生成
     lists = ["men", "women"]
     for gender in lists:
+        df = pd.read_csv(f"../data/{gender}/{gender}.csv", index_col=0)
         files = natsorted(glob.glob(f"../data/{gender}/image/mask/*.jpg"))
         # 画像の特徴ベクトルをクラスタリング
-        centroids, _ = calc_cluster(files)
+        centroids = calc_cluster(files)
+        probs = calc_prob(files, centroids)
+        df_probs = pd.DataFrame(probs, columns=["probs"])
+        new_df = pd.concat([df, df_probs], axis=1)
+        new_df.to_csv(f"../data/{gender}/{gender}_add_probs.csv")
         with open(f"../data/{gender}/{gender}.pickle", "wb") as f:
-            pickle.dump({"centroids": centroids, "files": files}, f)
+            pickle.dump({"centroids": centroids}, f)
+        
 
 if __name__ == "__main__":
     main()
