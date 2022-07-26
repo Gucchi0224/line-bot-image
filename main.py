@@ -6,7 +6,7 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from linebot.models import ImageMessage
+from linebot.models import ImageMessage, FlexSendMessage
 from src.img_similar import calc_prob, calc_sim
 import boto3
 import urllib.request
@@ -41,11 +41,17 @@ def handle_message(event):
     text = event.message.text
     if text == "男":
         text = "男性の洋服を推薦します。"
-        
+        messsage = TextSendMessage(text=text)
     elif text == "女":
         text = "女性の洋服を推薦します。"
+        messsage = TextSendMessage(text=text)
+    else:
+        # FlexMessageのjsonファイルを読み込む
+        with open("json/FlexMessage/FlexMessage.json", "r") as f:
+            flex_json_data = json.load(f)
+        message = FlexSendMessage(alt_text="Image Similar", contents=flex_json_data)
         
-    reply_message(event, TextSendMessage(text=text))
+    reply_message(event, message)
 
 
 # 画像データ→類似検索
