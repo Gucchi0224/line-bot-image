@@ -85,9 +85,7 @@ def handle_message(event):
     # S3内のcsvファイルを取得
     url = client.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': BUCKET_NAME, 'Key': "men/men.csv"}, ExpiresIn=60)
     df = pd.read_csv(url, index_col=0)
-    print(df.columns.values)
     
-    return 0
     # データセットを50個に限定（処理時間のため）
     df = df[:50]
     df_image = df["画像URL"].to_list()
@@ -95,30 +93,27 @@ def handle_message(event):
     # データセットの画像の各クラスタの所属確率を算出する
     probs = calc_prob(df_image, centroids)
     
-    # 入力画像との類似度を計算
-    rank = []
-    for img_url, p in zip(df_image, probs):
-        if p is not None:
-            sim = calc_sim(prob, p)
-            rank.append([img_url, sim])
-    
-    # ランキングを降順に並び替え
+    # 入力画像との類似度を計算して、類似度を降順に並び替え
+    rank = [[img_url, calc_sim(prob, p)] for img_url, p in zip(df_image, probs) if p is not None]
     rank = sorted(rank, key=lambda x: -x[1])
+    
+    # FlexMessageのjsonファイルを読み込む
+    with open("json/FlexMessage/FlexMessage.json", "r") as f:
+        flex_json_data = json.load(f)
     
     d_flex = {
         "type": "carousel",
         "contents": []
     }
-    # FlexMessageのjsonファイルを読み込む
-    with open("json/FlexMessage/FlexMessage.json", "r") as f:
-        flex_json_data = json.load(f)
     
     # 上位5個の洋服を推薦
     for img_url, _ in rank[:5]:
         cloth_info = df[df["画像URL"]==img_url]
-        
+        flex_json_data["hero"]["url"] = img_url
+        flex_json_data["body"]["contents"][0]["text"] = cloth_info["商品名"]
+        flex_json_data["body"]["contents"][1]["contents"][0]["text"] = cloth_info["価格"]
+        flex_json_data["footer"]["contents"][0]["action"]["uri"] = cloth_info["URL"]
         d_flex["contents"].append(flex_json_data)
-        #string += "%.3f %s \n" % (sim, f)
     
     reply_message(event, FlexSendMessage(alt_text="Image Similar", contents=d_flex))
 
