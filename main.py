@@ -46,6 +46,7 @@ def handle_message(event):
     userid = event.source.user_id
     text = event.message.text
     client = boto3.client('dynamodb', 
+        region_name='ap-northeast-1', 
         aws_access_key_id=AWS_ACCESS_KEY_ID,
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY
     )
