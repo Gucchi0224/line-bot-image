@@ -51,15 +51,17 @@ def handle_message(event):
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY
     )
     if text == "男":
-        text = "男性の洋服を推薦します。"
+        send_text = "男性の洋服を推薦します。"
         client.put_item(
             TableName="line-bot-image",
             Item={
-                "gucchi": {"S": "men"}
+                "gucchi": {
+                    userid: {"S": "men"}
+                }
             }
         )
     elif text == "女":
-        text = "女性の洋服を推薦します。"
+        send_text = "女性の洋服を推薦します。"
         client.put_item(
             TableName="line-bot-image",
             Item={
@@ -68,7 +70,7 @@ def handle_message(event):
         )
     else:
         return 0
-    reply_message(event, message = TextSendMessage(text=text))
+    reply_message(event, message=TextSendMessage(text=send_text))
 
 
 # 画像データ→類似検索
