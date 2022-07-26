@@ -92,8 +92,9 @@ def handle_message(event):
             'user_id': {'S': userid},
         }
     )
-    print(res)
-    gender = res['Item']['gender']
+    
+    gender = res['Item']['gender']['S']
+    
     client = boto3.client(
         's3', region_name='ap-northeast-1', 
         aws_access_key_id=AWS_ACCESS_KEY_ID,
