@@ -114,7 +114,6 @@ def handle_message(event):
         flex_json_data["body"]["contents"][1]["contents"][0]["text"] = cloth_info["価格"].values[0]
         flex_json_data["footer"]["contents"][0]["action"]["uri"] = cloth_info["URL"].values[0]
         d_flex["contents"].append(flex_json_data)
-        break
     
     reply_message(event, FlexSendMessage(alt_text="Image Similar", contents=d_flex))
 
