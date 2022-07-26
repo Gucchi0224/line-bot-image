@@ -110,10 +110,9 @@ def handle_message(event):
     for img_url, _ in rank[:5]:
         cloth_info = df[df["画像URL"]==img_url]
         flex_json_data["hero"]["url"] = img_url
-        print(cloth_info["商品名"].values)
-        flex_json_data["body"]["contents"][0]["text"] = cloth_info["商品名"].values
-        #flex_json_data["body"]["contents"][1]["contents"][0]["text"] = cloth_info["価格"]
-        #flex_json_data["footer"]["contents"][0]["action"]["uri"] = cloth_info["URL"]
+        flex_json_data["body"]["contents"][0]["text"] = cloth_info["商品名"].values[0]
+        flex_json_data["body"]["contents"][1]["contents"][0]["text"] = cloth_info["価格"].values[0]
+        flex_json_data["footer"]["contents"][0]["action"]["uri"] = cloth_info["URL"].values[0]
         d_flex["contents"].append(flex_json_data)
         break
     
