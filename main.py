@@ -84,8 +84,8 @@ def handle_message(event):
     
     # S3内のcsvファイルを取得
     url = client.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': BUCKET_NAME, 'Key': "men/men.csv"}, ExpiresIn=60)
-    df = pd.read_csv(url)
-    print(df.head())
+    df = pd.read_csv(url, index_col=0)
+    print(df.columns.values)
     
     return 0
     # データセットを50個に限定（処理時間のため）
