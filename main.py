@@ -116,8 +116,7 @@ def handle_message(event):
         d_flex["contents"].append(flex_json_data)
         #string += "%.3f %s \n" % (sim, f)
     
-    message = FlexSendMessage(alt_text="Image Similar", contents=d_flex)
-    reply_message(event, TextSendMessage(text=message))
+    reply_message(event, FlexSendMessage(alt_text="Image Similar", contents=d_flex))
 
 
 # メッセージを送信
