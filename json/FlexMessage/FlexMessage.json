@@ -3,7 +3,7 @@
   "hero": {
     "type": "image",
     "size": "full",
-    "aspectRatio": "15:10",
+    "aspectRatio": "10:15",
     "aspectMode": "cover",
     "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png"
   },
@@ -29,14 +29,6 @@
             "wrap": true,
             "weight": "bold",
             "size": "xl",
-            "flex": 0
-          },
-          {
-            "type": "text",
-            "text": ".99",
-            "wrap": true,
-            "weight": "bold",
-            "size": "sm",
             "flex": 0
           }
         ]
