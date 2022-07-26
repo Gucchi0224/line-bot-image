@@ -89,6 +89,7 @@ def handle_message(event):
     # 入力画像との類似度を計算して、類似度を降順に並び替え
     rank = []
     for data in df[["画像URL", "probs"]]:
+        print(data)
         img_url = data["画像URL"]
         p = data["probs"]
         print(p)
