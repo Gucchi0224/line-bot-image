@@ -79,31 +79,32 @@ def handle_message(event):
         obj = pickle.load(f)
         centroids = obj["centroids"]
     
-    # 入力画像のクラスを
+    # 入力画像の各クラスタの所属確率を算出する
     prob = calc_prob([img_binarystream], centroids)[0]
     
     # S3内のcsvファイルを取得
     url = client.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': BUCKET_NAME, 'Key': "men/men.csv"}, ExpiresIn=60)
     df = pd.read_csv(url)
+    print(df.head())
     
+    return 0
     # データセットを50個に限定（処理時間のため）
     df = df[:50]
     df_image = df["画像URL"].to_list()
     
-    # データセットの画像の各クラスタの
+    # データセットの画像の各クラスタの所属確率を算出する
     probs = calc_prob(df_image, centroids)
     
     # 入力画像との類似度を計算
     rank = []
-    for f, p in zip(df_image, probs):
+    for img_url, p in zip(df_image, probs):
         if p is not None:
             sim = calc_sim(prob, p)
-            rank.append([f, sim])
+            rank.append([img_url, sim])
     
     # ランキングを降順に並び替え
     rank = sorted(rank, key=lambda x: -x[1])
     
-    # 上位5個の洋服を推薦
     d_flex = {
         "type": "carousel",
         "contents": []
@@ -112,12 +113,14 @@ def handle_message(event):
     with open("json/FlexMessage/FlexMessage.json", "r") as f:
         flex_json_data = json.load(f)
     
-    for f, sim in rank[:5]:
+    # 上位5個の洋服を推薦
+    for img_url, _ in rank[:5]:
+        cloth_info = df[df["画像URL"]==img_url]
+        
         d_flex["contents"].append(flex_json_data)
         #string += "%.3f %s \n" % (sim, f)
     
     reply_message(event, FlexSendMessage(alt_text="Image Similar", contents=d_flex))
-
 
 # メッセージを送信
 def reply_message(event, messages):
