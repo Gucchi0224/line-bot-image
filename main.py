@@ -80,7 +80,7 @@ def handle_message(event):
         centroids = obj["centroids"]
     
     # 入力画像の各クラスタの所属確率を算出する
-    prob = eval(calc_prob([img_binarystream], centroids)[0])
+    prob = calc_prob([img_binarystream], centroids)[0]
     
     # S3内のcsvファイルを取得
     url = client.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': BUCKET_NAME, 'Key': "men/men_add_probs.csv"}, ExpiresIn=60)
@@ -93,7 +93,7 @@ def handle_message(event):
     probs = df["probs"].to_list()
     
     # 入力画像との類似度を計算して、類似度を降順に並び替え
-    rank = [[img_url, calc_sim(prob, eval(p))] for img_url, p in zip(df_image, probs) if p is not None]
+    rank = [[img_url, calc_sim(eval(prob), eval(p))] for img_url, p in zip(df_image, probs) if p is not None]
     rank = sorted(rank, key=lambda x: -x[1])
     
     # 上位5個の洋服を推薦して、FlexMessageを作成
