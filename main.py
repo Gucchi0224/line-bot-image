@@ -91,14 +91,13 @@ def handle_message(event):
     
     # データセットの画像の各クラスタの所属確率
     probs = df["probs"].to_list()
-    print(probs[:2])
     
     # 入力画像との類似度を計算して、類似度を降順に並び替え
     rank = []
     for img_url, p in zip(df_image, probs):
         if p is not None:
-            print(p)
-            rank.append(img_url, calc_sim(eval(prob), eval(p)))
+            #print(p)
+            rank.append([img_url, calc_sim(eval(prob), p)])
     rank = sorted(rank, key=lambda x: -x[1])
     
     # 上位5個の洋服を推薦して、FlexMessageを作成
