@@ -45,7 +45,7 @@ def calc_prob(files, centroids):
             keypoints = detector.detect(image, None)
             if keypoints is not None:
                 descriptor = extractor.compute(image, keypoints)[0]
-        probs.append(str(descriptor))
+        probs.append(str(descriptor.tolist()))
     return probs
 
 # 指定されたクラスタ所属確率の類似度を算出する
