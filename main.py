@@ -96,7 +96,7 @@ def handle_message(event):
     rank = []
     for img_url, p in zip(df_image, probs):
         if p is not None:
-            #print(p)
+            print(type(prob), type(p))
             rank.append([img_url, calc_sim(eval(prob), p)])
     rank = sorted(rank, key=lambda x: -x[1])
     
