@@ -55,11 +55,17 @@ def handle_message(event):
         client.put_item(
             TableName="line-bot-image",
             Item={
-                "gender": "men",
+                "gender": {userid: "men"}
             }
         )
     elif text == "女":
         text = "女性の洋服を推薦します。"
+        client.put_item(
+            TableName="line-bot-image",
+            Item={
+                "gender": {userid: "women"}
+            }
+        )
     else:
         return 0
     reply_message(event, message = TextSendMessage(text=text))
