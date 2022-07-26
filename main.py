@@ -86,15 +86,20 @@ def handle_message(event):
     url = client.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': BUCKET_NAME, 'Key': "men/men_add_probs.csv"}, ExpiresIn=60)
     df = pd.read_csv(url, index_col=0)
     
+    # 画像URLのListを取得
+    df_image = df["画像URL"].to_list()
+    
+    # データセットの画像の各クラスタの所属確率
+    probs = df["probs"].to_list()
+    
     # 入力画像との類似度を計算して、類似度を降順に並び替え
     rank = []
-    for data in df[["画像URL", "probs"]]:
-        print(data)
-        img_url = data["画像URL"]
-        p = data["probs"]
-        print(p)
-        if p is not None:
+    for img_url, p in zip(df_image, probs):
+        # 確率が存在する画像だけランキングリストに追加する
+        try:
             rank.append([img_url, calc_sim(eval(prob), eval(p))])
+        except:
+            continue
     rank = sorted(rank, key=lambda x: -x[1])
     
     # 上位5個の洋服を推薦して、FlexMessageを作成
