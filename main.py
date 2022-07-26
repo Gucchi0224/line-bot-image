@@ -55,7 +55,8 @@ def handle_message(event):
         client.put_item(
             TableName="line-bot-image",
             Item={
-                "user_id": {"S": "men"}
+                "gucchi": {"S": userid},
+                "gender": {"S": "men"}
             }
         )
     elif text == "女":
