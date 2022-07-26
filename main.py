@@ -11,11 +11,17 @@ from src.img_similar import calc_prob, calc_sim
 import boto3
 import urllib.request
 import pandas as pd
+from boto3.dynamodb.conditions import Key, Attr
 
 app = Flask(__name__)
 
 line_bot_api = LineBotApi(settings.YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(settings.YOUR_CHANNEL_SECRET)
+
+# AWS S3にアクセスするためのキーの指定
+AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
+BUCKET_NAME = settings.BUCKET_NAME
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -39,8 +45,18 @@ def callback():
 def handle_message(event):
     userid = event.source.user_id
     text = event.message.text
+    client = boto3.client('dynamodb', 
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+    )
     if text == "男":
         text = "男性の洋服を推薦します。"
+        client.put_item(
+            TableName="line-bot-image",
+            Item={
+                "gender": "men",
+            }
+        )
     elif text == "女":
         text = "女性の洋服を推薦します。"
     else:
@@ -61,11 +77,6 @@ def handle_message(event):
     for data in content.iter_content():
         image_binary += data
     img_binarystream = io.BytesIO(image_binary)
-    
-    # AWS S3にアクセスするためのキーの指定
-    AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
-    AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
-    BUCKET_NAME = settings.BUCKET_NAME
     
     client = boto3.client(
         's3', region_name='ap-northeast-1', 
