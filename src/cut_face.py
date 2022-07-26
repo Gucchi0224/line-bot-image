@@ -51,10 +51,8 @@ def main():
             img = imread_web(img_url)
             # 元画像を保存
             cv2.imwrite("{}/{}.jpg".format(origin_path, i), img)
-            
             # グレースケールに変換
             gray_img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-            
             # 最小で(16,16)のサイズの顔画像を検出
             cascade = cv2.CascadeClassifier(cascade_path) 
             facerect = cascade.detectMultiScale(gray_img, scaleFactor=1.1, minNeighbors=1, minSize=(16,16))
