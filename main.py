@@ -45,31 +45,32 @@ def callback():
 def handle_message(event):
     userid = event.source.user_id
     text = event.message.text
-    client = boto3.client('dynamodb', 
+    db_client = boto3.client('dynamodb', 
         region_name='ap-northeast-1', 
         aws_access_key_id=AWS_ACCESS_KEY_ID,
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY
     )
     if text == "男":
         send_text = "男性の洋服を推薦します。"
-        client.put_item(
-            TableName="line-bot-image",
+        db_client.put_item(
+            TableName="select_gender",
             Item={
-                "gucchi": {"S": userid},
-                "gender": {"S": "men"}
+                "user_id": {'S': userid},
+                "gender": {'S': 'men'}
             }
         )
     elif text == "女":
         send_text = "女性の洋服を推薦します。"
-        client.put_item(
-            TableName="line-bot-image",
+        db_client.put_item(
+            TableName="select_gender",
             Item={
-                userid: {"S": "women"}
+                'user_id': {'S': userid},
+                'gender': {'S': 'women'}
             }
         )
     else:
         return 0
-    reply_message(event, message=TextSendMessage(text=send_text))
+    reply_message(event, TextSendMessage(text=send_text))
 
 
 # 画像データ→類似検索
@@ -79,13 +80,20 @@ def handle_message(event):
     message_id = event.message.id
     userid = event.source.user_id
     
-    # 画像のバイナリデータの取得
-    content = line_bot_api.get_message_content(message_id)
-    image_binary = b""
-    for data in content.iter_content():
-        image_binary += data
-    img_binarystream = io.BytesIO(image_binary)
+    db_client = boto3.client('dynamodb', 
+        region_name='ap-northeast-1', 
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+    )
     
+    res = db_client.get_item(
+        TableName="select_gender",
+        Key={
+            'user_id': {'S': userid},
+        }
+    )
+    print(res)
+    gender = res['Item']['gender']
     client = boto3.client(
         's3', region_name='ap-northeast-1', 
         aws_access_key_id=AWS_ACCESS_KEY_ID,
@@ -93,16 +101,23 @@ def handle_message(event):
     )
     
     # S3内のpickleを取得
-    url = client.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': BUCKET_NAME, 'Key': "men/men.pickle"}, ExpiresIn=60)
+    url = client.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': BUCKET_NAME, 'Key': f"{gender}/{gender}.pickle"}, ExpiresIn=60)
     with urllib.request.urlopen(url) as f:
         obj = pickle.load(f)
         centroids = obj["centroids"]
+    
+    # 画像のバイナリデータの取得
+    content = line_bot_api.get_message_content(message_id)
+    image_binary = b""
+    for data in content.iter_content():
+        image_binary += data
+    img_binarystream = io.BytesIO(image_binary)
     
     # 入力画像の各クラスタの所属確率を算出する
     prob = calc_prob([img_binarystream], centroids)[0]
     
     # S3内のcsvファイルを取得
-    url = client.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': BUCKET_NAME, 'Key': "men/men_add_probs.csv"}, ExpiresIn=60)
+    url = client.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': BUCKET_NAME, 'Key': f"{gender}/{gender}_add_probs.csv"}, ExpiresIn=60)
     df = pd.read_csv(url, index_col=0)
     
     # 画像URLのListを取得
