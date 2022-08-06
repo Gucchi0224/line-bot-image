@@ -11,6 +11,8 @@ import pandas as pd
 import cv2
 from tqdm import tqdm
 
+################################################################################################
+# 画像URLから画像を読み込む
 def imread_web(url):
     # 画像をリクエストする
     res = requests.get(url)
@@ -23,6 +25,7 @@ def imread_web(url):
     os.remove(fp.name)
     return img
 
+################################################################################################
 def main():
     # カスケードファイルを用いて顔画像の切り抜きを行う
     cascade_path = "../haarcascade_frontalface_alt.xml"
@@ -66,6 +69,12 @@ def main():
                     add_gray_rect = cv2.rectangle(img, (x,y), (x+w,y+h), color=(121,121,121), thickness=-1)
                     cv2.imwrite("{}/{}.jpg".format(mask_path, i), add_gray_rect)
                     break # 1つのファイルにつき1つだけマスクをかける
+            else:
+                # 顔部分がマスクできない場合はリストから除外する
+                df = df[df["画像URL"]!=img_url]
+        new_df = df.reset_index(drop=True)
+        new_df.to_csv(f"../data/{gender}/{gender}_cut_face.csv")
 
+################################################################################################
 if __name__ == "__main__":
     main()
