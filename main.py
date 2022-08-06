@@ -26,6 +26,7 @@ handler = WebhookHandler(settings.YOUR_CHANNEL_SECRET)
 AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
 BUCKET_NAME = settings.BUCKET_NAME
+TABLE_NAME = settings.TABLE_NAME
 
 ################################################################################################
 @app.route("/callback", methods=['POST'])
@@ -62,7 +63,7 @@ def handle_message(event):
     if text == "男":
         send_text = "男性の洋服を推薦します。"
         db_client.put_item(
-            TableName="select_gender",
+            TableName=TABLE_NAME,
             Item={
                 "user_id": {'S': userid},
                 "gender": {'S': 'men'}
