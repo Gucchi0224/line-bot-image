@@ -12,6 +12,7 @@ import boto3
 import urllib.request
 import pandas as pd
 
+################################################################################################
 app = Flask(__name__)
 
 line_bot_api = LineBotApi(settings.YOUR_CHANNEL_ACCESS_TOKEN)
@@ -22,6 +23,7 @@ AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
 BUCKET_NAME = settings.BUCKET_NAME
 
+################################################################################################
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -39,6 +41,7 @@ def callback():
 
     return 'OK'
 
+################################################################################################
 # テキストデータ
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
@@ -75,7 +78,7 @@ def handle_message(event):
     
     reply_message(event, TextSendMessage(text=send_text))
 
-
+################################################################################################
 # 画像データ→類似検索
 @handler.add(MessageEvent, message=ImageMessage)
 def handle_message(event):
@@ -161,6 +164,7 @@ def handle_message(event):
     
     reply_message(event, FlexSendMessage(alt_text="Image Similar", contents=d_flex))
 
+################################################################################################
 # メッセージを送信
 def reply_message(event, messages):
     line_bot_api.reply_message(
@@ -168,7 +172,7 @@ def reply_message(event, messages):
         messages=messages,
     )
 
-
+################################################################################################
 if __name__ == "__main__":
     port = os.environ.get('PORT', 3333)
     app.run(
