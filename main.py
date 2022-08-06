@@ -109,13 +109,17 @@ def handle_message(event):
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY
     )
     
-    # S3内のpickleを取得
-    url = client.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': BUCKET_NAME, 'Key': f"{gender}/{gender}.pickle"}, ExpiresIn=60)
+    # S3内からクラスタの重心が含まれているpickleを取得
+    url = client.generate_presigned_url(
+        ClientMethod='get_object', 
+        Params={'Bucket': BUCKET_NAME, 'Key': f"{gender}/{gender}.pickle"}, 
+        ExpiresIn=60
+    )
     with urllib.request.urlopen(url) as f:
         obj = pickle.load(f)
         centroids = obj["centroids"]
     
-    # 画像のバイナリデータの取得
+    # LINEサーバから画像のバイナリデータの取得
     content = line_bot_api.get_message_content(message_id)
     image_binary = b""
     for data in content.iter_content():
@@ -126,7 +130,11 @@ def handle_message(event):
     prob = calc_prob([img_binarystream], centroids)[0]
     
     # S3内のcsvファイルを取得
-    url = client.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': BUCKET_NAME, 'Key': f"{gender}/{gender}_add_probs.csv"}, ExpiresIn=60)
+    url = client.generate_presigned_url(
+        ClientMethod='get_object', 
+        Params={'Bucket': BUCKET_NAME, 'Key': f"{gender}/{gender}_add_probs.csv"}, 
+        ExpiresIn=60
+    )
     df = pd.read_csv(url, index_col=0)
     
     # 画像URLのListを取得
@@ -136,13 +144,7 @@ def handle_message(event):
     probs = df["probs"].to_list()
     
     # 入力画像との類似度を計算して、類似度を降順に並び替え
-    rank = []
-    for img_url, p in zip(df_image, probs):
-        # 確率が存在する画像だけランキングリストに追加する
-        try:
-            rank.append([img_url, calc_sim(eval(prob), eval(p))])
-        except:
-            continue
+    rank = [[img_url, calc_sim(eval(prob), eval(p))] for img_url, p in zip(df_image, probs)]
     rank = sorted(rank, key=lambda x: -x[1])
     
     # 上位5個の洋服を推薦して、FlexMessageを作成
