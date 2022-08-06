@@ -1,3 +1,7 @@
+"""
+main.py: LINEのメッセージ形式（テキストor画像）によって処理を実行する
+"""
+
 import os
 import pickle, io
 import json
@@ -144,7 +148,10 @@ def handle_message(event):
     probs = df["probs"].to_list()
     
     # 入力画像との類似度を計算して、類似度を降順に並び替え
-    rank = [[img_url, calc_sim(eval(prob), eval(p))] for img_url, p in zip(df_image, probs)]
+    rank = []
+    for img_url, p in zip(df_image, probs):
+        print(probs)
+        rank.append([img_url, calc_sim(eval(prob), eval(p))])
     rank = sorted(rank, key=lambda x: -x[1])
     
     # 上位5個の洋服を推薦して、FlexMessageを作成
