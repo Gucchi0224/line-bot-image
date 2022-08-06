@@ -11,6 +11,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from time import sleep
 
+################################################################################################
 def main():
     args = sys.argv
     if not os.path.exists("../data/"):
@@ -71,5 +72,6 @@ def main():
     # ブラウザを終了
     driver.quit()
 
+################################################################################################
 if __name__ == '__main__':
     main()
