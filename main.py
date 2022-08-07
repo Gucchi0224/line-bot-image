@@ -151,7 +151,7 @@ def handle_message(event):
     # 入力画像との類似度を計算して、類似度を降順に並び替え
     rank = [[img_url, calc_sim(eval(prob), eval(p))] for img_url, p in zip(df_image, probs)]
     rank = sorted(rank, key=lambda x: -x[1])
-    
+    print(rank[1])
     # 上位5個の洋服を推薦して、FlexMessageを作成
     d_flex = {
         "type": "carousel",
@@ -169,8 +169,6 @@ def handle_message(event):
         flex_json_data["footer"]["contents"][0]["action"]["uri"] = cloth_info["URL"].values[0]
         d_flex["contents"].append(flex_json_data)
         
-        print("{} -> {}".format(img_url, score))
-    
     reply_message(event, FlexSendMessage(alt_text="Image Similar", contents=d_flex))
 
 ################################################################################################
