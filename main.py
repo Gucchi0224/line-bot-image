@@ -149,7 +149,6 @@ def handle_message(event):
     probs = df["probs"].to_list()
     
     # 入力画像との類似度を計算して、類似度を降順に並び替え
-    print("similar: {}".format(calc_sim(eval(prob), eval(probs[0]))))
     rank = [[img_url, calc_sim(eval(prob), eval(p))] for img_url, p in zip(df_image, probs)]
     rank = sorted(rank, key=lambda x: -x[1])
     
@@ -170,6 +169,8 @@ def handle_message(event):
         flex_json_data["footer"]["contents"][0]["action"]["uri"] = cloth_info["URL"].values[0]
         d_flex["contents"].append(flex_json_data)
         
+        print("{} -> {}".format(img_url, score))
+    
     reply_message(event, FlexSendMessage(alt_text="Image Similar", contents=d_flex))
 
 ################################################################################################
