@@ -4,7 +4,6 @@ img_similar.py: 画像の類似度をBag of Visual Wordsを用いて計算
 https://hazm.at/mox/machine-learning/computer-vision/recipes/similar-image-retrieval.html
 """
 
-import enum
 import pickle
 from natsort import natsorted
 import glob
@@ -17,7 +16,7 @@ import pandas as pd
 detector = cv2.KAZE_create()
 
 ################################################################################################
-# 特徴量空間をcluster_numクラスタに分け重心を求める（予め用意しておく）
+# 特徴量空間をクラスタに分け重心を求める（予め用意しておく）
 def calc_cluster(files, cluster_num=5):    
     bowTrainer = cv2.BOWKMeansTrainer(cluster_num)
     for file in files:
@@ -37,7 +36,7 @@ def calc_prob(files, centroids):
     extractor = cv2.BOWImgDescriptorExtractor(detector, matcher)
     extractor.setVocabulary(centroids)
     probs = []
-    for i, file in enumerate(files):
+    for file in files:
         descriptor = None
         img_pil = Image.open(file)
         img_numpy = np.asarray(img_pil)
@@ -74,5 +73,6 @@ def main():
         with open(f"../data/{gender}/{gender}.pickle", "wb") as f:
             pickle.dump({"centroids": centroids}, f)
 
+#############################################################################
 if __name__ == "__main__":
     main()
