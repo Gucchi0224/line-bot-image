@@ -72,7 +72,7 @@ def handle_message(event):
     elif text == "女":
         send_text = "女性の洋服を推薦します。"
         db_client.put_item(
-            TableName="select_gender",
+            TableName=TABLE_NAME,
             Item={
                 'user_id': {'S': userid},
                 'gender': {'S': 'women'}
@@ -157,7 +157,7 @@ def handle_message(event):
         "type": "carousel",
         "contents": []
     }
-    for img_url, score in rank[:5]:
+    for img_url, _ in rank[:5]:
         # FlexMessageのjsonファイルを読み込む
         with open("json/FlexMessage/FlexMessage.json", "r") as f:
             flex_json_data = json.load(f)
@@ -169,8 +169,6 @@ def handle_message(event):
         flex_json_data["footer"]["contents"][0]["action"]["uri"] = cloth_info["URL"].values[0]
         d_flex["contents"].append(flex_json_data)
         
-        print("{} -> {}".format(img_url, score))
-    
     reply_message(event, FlexSendMessage(alt_text="Image Similar", contents=d_flex))
 
 ################################################################################################
